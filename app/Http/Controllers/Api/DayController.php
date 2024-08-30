@@ -13,7 +13,13 @@ class DayController extends Controller
      */
     public function store(Request $request)
     {
-        $day = Day::create($request->all());
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25', 'unique:days,title'],
+            'description' => ['required', 'string'],
+            'trip_id' => ['required']
+        ]);
+
+        $day = Day::create($validatedData);
 
         return response()->json([
             'results' => $day
@@ -25,7 +31,12 @@ class DayController extends Controller
      */
     public function update(Request $request, Day $day)
     {
-        $day->update($request->all());
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25'],
+            'description' => ['required', 'string'],
+        ]);
+
+        $day->update($validatedData);
 
         return response()->json([
             'results' => $day

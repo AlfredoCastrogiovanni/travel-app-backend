@@ -25,11 +25,15 @@ class TripController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25', 'unique:trips,title'],
+            'description' => ['required', 'string'],
+            'start_date' => ['required', 'date']
+        ]);
 
-        $data['user_id'] = Auth::id();
+        $validatedData['user_id'] = Auth::id();
 
-        $trip = Trip::create($data);
+        $trip = Trip::create($validatedData);
 
         return response()->json([
             'results' => $trip
@@ -52,9 +56,13 @@ class TripController extends Controller
      */
     public function update(Request $request, Trip $trip)
     {
-        $data = $request->all();
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25'],
+            'description' => ['required', 'string'],
+            'start_date' => ['required', 'date'],
+        ]);
 
-        $trip->update($data);
+        $trip->update($validatedData);
 
         return response()->json([
             'results' => $trip

@@ -13,7 +13,14 @@ class StageController extends Controller
      */
     public function store(Request $request)
     {
-        $stage = Stage::create($request->all());
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25', 'unique:stages,title'],
+            'description' => ['required', 'string'],
+            'day_id' => ['required']
+        ]);
+
+        $stage = Stage::create($validatedData);
+
         return response()->json([
             'results' => $stage
         ]);
@@ -24,7 +31,13 @@ class StageController extends Controller
      */
     public function update(Request $request, Stage $stage)
     {
-        $stage->update($request->all());
+        $validatedData = $request->validate([
+            'title' => ['required', 'max:25'],
+            'description' => ['required', 'string'],
+        ]);
+
+        $stage->update($validatedData);
+
         return response()->json([
             'results' => $stage
         ]);
